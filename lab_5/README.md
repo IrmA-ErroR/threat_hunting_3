@@ -209,21 +209,6 @@ print(
       <chr>       <int>         <int>               <dbl>
     1 12.30.96.87   124        356207              20601.
 
-Конечно, вот переписанный запрос с использованием `print`:
-
-``` r
-print(
-  df %>%
-    filter(!grepl('^1[2-4].*', dst) & src != "13.37.84.125" & src != "12.55.77.96") %>%
-    group_by(src, port) %>%
-    summarise(bytes_ip_port = sum(bytes), .groups = "drop") %>%
-    group_by(port) %>%
-    mutate(sum_traffic_by_port = mean(bytes_ip_port)) %>%
-    ungroup() %>%
-    slice_max(order_by = bytes_ip_port / sum_traffic_by_port, n = 1) %>%
-    collect()
-)
-```
 
 Запрос фильтрует данные, исключая определенные IP-адреса и диапазоны
 IP-адресов, группирует данные по источнику и порту, суммирует объемы
@@ -260,23 +245,6 @@ print(
       <int>
     1   124
 
-Конечно, вот переписанный запрос с использованием `print`:
-
-``` r
-print(
-  df %>%
-    group_by(port) %>%
-    summarise(min_bytes = min(bytes),
-              max_bytes = max(bytes),
-              diff_bytes = max(bytes) - min(bytes),
-              avg_bytes = mean(bytes),
-              count = n()) %>%
-    filter(avg_bytes - min_bytes < 10 & min_bytes != max_bytes) %>%
-    select(port) %>%
-    collect()
-)
-```
-
 Запрос группирует данные по порту, вычисляет минимальные, максимальные,
 разницу, средние значения объема данных и количество записей для каждого
 порта. Затем он фильтрует порты, у которых разница между средним и
@@ -310,21 +278,6 @@ print(
        port
       <int>
     1   115
-
-Вот переписанный запрос с использованием `print`:
-
-``` r
-print(
-  df %>%
-    filter(grepl('^1[2-4].*', src) & grepl('^1[2-4].*', dst)) %>%
-    group_by(port) %>%
-    summarise(diff_bytes = max(bytes) - min(bytes)) %>%
-    arrange(desc(diff_bytes)) %>%
-    select(port) %>%
-    slice_head(n = 1) %>%
-    collect()
-)
-```
 
 Запрос фильтрует данные, выбирая строки, где `src` и `dst` начинаются с
 “12”, “13” или “14”. Затем он группирует данные по порту, вычисляет
@@ -375,16 +328,6 @@ print(
       port
     1   83
 
-Вот переписанный запрос с использованием `print`:
-
-``` r
-print(
-  df %>%
-    filter(timestamp == max(timestamp, na.rm = TRUE)) %>%
-    select(port) %>%
-    collect()
-)
-```
 
 Запрос фильтрует данные, выбирая строки с максимальным значением
 временной метки (`timestamp`), и выводит порт (`port`) для этих строк.
